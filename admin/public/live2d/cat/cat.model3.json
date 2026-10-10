@@ -1,0 +1,70 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "cat.moc3",
+    "Textures": [
+      "texture_00.png"
+    ],
+    "Motions": {
+      "nod": [
+        {
+          "File": "nod.motion3.json",
+          "FadeInTime": 0.2,
+          "FadeOutTime": 0.3
+        }
+      ],
+      "shake": [
+        {
+          "File": "shake.motion3.json",
+          "FadeInTime": 0.2,
+          "FadeOutTime": 0.3
+        }
+      ],
+      "sleepy": [
+        {
+          "File": "sleepy.motion3.json",
+          "FadeInTime": 0.2,
+          "FadeOutTime": 0.3
+        }
+      ],
+      "nuzzle": [
+        {
+          "File": "nuzzle.motion3.json",
+          "FadeInTime": 0.2,
+          "FadeOutTime": 0.3
+        }
+      ],
+      "stretch": [
+        {
+          "File": "stretch.motion3.json",
+          "FadeInTime": 0.2,
+          "FadeOutTime": 0.3
+        }
+      ],
+      "curious": [
+        {
+          "File": "curious.motion3.json",
+          "FadeInTime": 0.2,
+          "FadeOutTime": 0.3
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ]
+}

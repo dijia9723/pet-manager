@@ -1,0 +1,648 @@
+/* ==========================================================================
+ * 全局基线样式
+ * 颜色 / 圆角 / 阴影一律引用 antd v5 的 CSS 变量（ConfigProvider 已开 cssVar），
+ * 亮暗主题切换时变量自动换肤，本文件不再硬编码暗色值。
+ * ========================================================================== */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+  background: var(--ant-color-bg-layout);
+  color: var(--ant-color-text);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* 细滚动条（亮色 / 暗色都柔和，不抢内容） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.35);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.55);
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ------------------------------- 顶部进度条 ------------------------------- */
+#nprogress {
+  pointer-events: none;
+}
+#nprogress .bar {
+  background: var(--app-primary, #1677ff);
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+#nprogress .peg {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow:
+    0 0 10px var(--app-primary, #1677ff),
+    0 0 5px var(--app-primary, #1677ff);
+  opacity: 1;
+  transform: rotate(3deg) translate(0, -4px);
+}
+
+/* ------------------------------- 空状态插画 ------------------------------- */
+.app-empty-paw {
+  display: inline-block;
+  color: var(--ant-color-fill-secondary);
+  opacity: 0.7;
+}
+
+/* ------------------------------- 品牌标识 ------------------------------- */
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex: none;
+  background: linear-gradient(
+    135deg,
+    var(--ant-color-primary-active, #0958d9),
+    var(--ant-color-primary, #1677ff)
+  );
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--ant-color-primary) 28%, transparent);
+}
+
+/* ProLayout 侧栏 / 顶栏里的品牌区 */
+.app-sider-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px;
+  cursor: pointer;
+}
+.app-sider-brand .app-sider-brand-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--ant-color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 侧栏品牌底栏：与菜单用分隔线而非阴影断开 */
+.ant-pro-sider-logo,
+.ant-pro-top-nav-header-logo {
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+}
+/* 固定顶栏：分隔线代替厚重投影 */
+.ant-pro-layout .ant-layout-header,
+.ant-pro-layout-header {
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+  box-shadow: none !important;
+}
+
+/* ------------------------------- 页签条 ------------------------------- */
+.app-tabs-bar {
+  margin: 0;
+  padding: 6px 12px 0;
+  background: var(--ant-color-bg-container);
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.app-tabs-bar .ant-tabs-nav {
+  margin: 0 !important;
+}
+/* 页签仅作导航，内容由 KeepAliveOutlet / Outlet 渲染，不使用 Tabs 面板 */
+.app-tabs-bar .ant-tabs-content-holder {
+  display: none;
+}
+.app-tabs-bar .ant-tabs-nav-operations {
+  margin-bottom: 0 !important;
+}
+/* card 型页签：与底栏贴合、间距呼吸、字号收敛 */
+.app-tabs-bar .ant-tabs-tab {
+  margin-inline: 0 6px !important;
+  font-size: 13px;
+  background: transparent;
+  border: 1px solid transparent !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.app-tabs-bar .ant-tabs-tab:hover {
+  color: var(--ant-color-primary);
+}
+/* 选中页签：主色浅底 + 主色文字（亮暗都由 token 派生） */
+.app-tabs-bar .ant-tabs-tab-active {
+  background: var(--ant-color-primary-bg);
+  border-color: var(--ant-color-primary-border) !important;
+}
+.app-tabs-bar .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--ant-color-primary) !important;
+  text-shadow: none;
+}
+.app-tabs-bar .app-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+.app-tabs-bar .app-tab-label .anticon {
+  font-size: 13px;
+}
+
+/* 页面切换淡入 */
+.app-page-fade {
+  animation: app-fade-in 0.18s ease-out;
+}
+@keyframes app-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------- 工作台欢迎横幅 ------------------------------- */
+.app-welcome {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(
+    120deg,
+    var(--ant-color-primary-active, #0958d9) 0%,
+    var(--ant-color-primary, #1677ff) 58%,
+    var(--ant-color-primary-hover, #4096ff) 100%
+  );
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--ant-color-primary) 22%, transparent);
+}
+.app-welcome .ant-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 24px 28px;
+}
+.app-welcome .welcome-hello {
+  font-size: 22px;
+  font-weight: 700;
+}
+.app-welcome .welcome-sub {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+.app-welcome .welcome-paw {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-12deg);
+  color: rgba(255, 255, 255, 0.16);
+  z-index: 0;
+}
+.app-stat-card {
+  border-radius: 12px;
+}
+.app-stat-card .ant-card-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+}
+.app-stat-icon {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 20px;
+}
+.app-stat-label {
+  font-size: 13px;
+  color: var(--ant-color-text-secondary);
+}
+.app-stat-value {
+  margin-top: 2px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ant-color-text);
+  word-break: break-all;
+}
+
+/* ------------------------------- 个人中心 ------------------------------- */
+.app-profile-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+.app-profile-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: -24px -24px 20px;
+  padding: 24px;
+  color: #fff;
+  background: linear-gradient(
+    120deg,
+    var(--ant-color-primary-active, #0958d9) 0%,
+    var(--ant-color-primary, #1677ff) 58%,
+    var(--ant-color-primary-hover, #4096ff) 100%
+  );
+}
+.app-profile-avatar {
+  flex: none;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 30px;
+}
+.app-profile-head-meta {
+  min-width: 0;
+  flex: 1;
+}
+.app-profile-name {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-profile-sub {
+  margin-top: 2px;
+  font-size: 13px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-profile-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.app-profile-tag {
+  margin-inline-end: 0;
+  border: none;
+}
+.app-profile-desc .ant-descriptions-item-label {
+  width: 96px;
+  color: var(--ant-color-text-secondary);
+}
+.app-profile-form {
+  max-width: 520px;
+}
+
+/* ------------------------------- 主题风格选择卡 ------------------------------- */
+.app-preset-picker {
+  display: grid;
+  /* minmax(0,1fr)：允许列收缩到内容以下，防止卡片撑破抽屉 */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+.app-preset-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 12px;
+  background: var(--ant-color-bg-container);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+.app-preset-card:hover {
+  border-color: var(--ant-color-primary);
+}
+.app-preset-card.is-active {
+  border-color: var(--ant-color-primary);
+  background: var(--ant-color-primary-bg);
+  box-shadow: 0 0 0 2px var(--ant-color-primary-bg-hover);
+}
+.app-preset-swatches {
+  display: inline-flex;
+  flex: none;
+}
+.app-preset-swatches i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--ant-color-bg-container);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.app-preset-swatches i + i {
+  margin-left: -6px;
+}
+.app-preset-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.app-preset-meta b,
+.app-preset-meta small {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-preset-meta b {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ant-color-text);
+}
+.app-preset-meta small {
+  font-size: 11px;
+  color: var(--ant-color-text-secondary);
+}
+.app-preset-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  color: var(--ant-color-primary);
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   萌宠主题风格层（html.app-cute 作用域）
+   组件形态/配色由 config/theme.ts 的 token 下发，这里只补 token 触达不到的
+   全局氛围：页面渐变背景、布局容器透出、暖色投影、滚动条
+   ========================================================================== */
+
+/* ---------------- 亮色：奶油蜜桃 ---------------- */
+html.app-cute body {
+  background:
+    radial-gradient(1200px 700px at 12% -10%, #fff6ec 0%, rgba(255, 246, 236, 0) 60%),
+    linear-gradient(135deg, #fef7ef 0%, #fdf3e9 45%, #f8e4d2 100%);
+  background-attachment: fixed;
+}
+
+/* 布局容器透出 body 渐变；固定顶栏 / 侧栏保持暖白 */
+html.app-cute .ant-pro-layout .ant-layout,
+html.app-cute .ant-pro-layout .ant-layout-content,
+html.app-cute .ant-pro-page-container-children-content {
+  background: transparent;
+}
+html.app-cute .ant-pro-layout .ant-layout-sider,
+html.app-cute .ant-pro-sider .ant-layout-sider-children,
+html.app-cute .ant-pro-layout .ant-layout-header {
+  background: #fffaf4;
+}
+
+/* 卡片：暖色柔光投影，替代中性灰阴影 */
+html.app-cute .ant-card,
+html.app-cute .ant-pro-card {
+  box-shadow: 0 14px 36px -20px rgba(191, 121, 78, 0.32);
+}
+
+/* 暖调滚动条 */
+html.app-cute * {
+  scrollbar-color: rgba(209, 134, 88, 0.35) transparent;
+}
+html.app-cute *::-webkit-scrollbar-thumb {
+  background: rgba(209, 134, 88, 0.35);
+}
+html.app-cute *::-webkit-scrollbar-thumb:hover {
+  background: rgba(209, 134, 88, 0.55);
+}
+
+/* 页签条：暖白顶栏配暖边框 */
+html.app-cute .app-tabs-bar {
+  background: rgba(255, 250, 244, 0.92);
+}
+
+/* 表格头部：奶霜底色上的柔和分隔（主色由 Table token 提供，这里弱化默认重边线） */
+html.app-cute .ant-table-wrapper .ant-table-thead > tr > th {
+  font-weight: 600;
+}
+
+/* ---------------- 暗色：暖棕可可 ---------------- */
+html.app-cute.app-dark body {
+  background:
+    radial-gradient(1100px 640px at 12% -10%, #342820 0%, rgba(52, 40, 32, 0) 60%),
+    linear-gradient(135deg, #271e18 0%, #201813 100%);
+  background-attachment: fixed;
+}
+html.app-cute.app-dark .ant-pro-layout .ant-layout-sider,
+html.app-cute.app-dark .ant-pro-sider .ant-layout-sider-children,
+html.app-cute.app-dark .ant-pro-layout .ant-layout-header {
+  background: #261d17;
+}
+html.app-cute.app-dark .ant-card,
+html.app-cute.app-dark .ant-pro-card {
+  box-shadow: 0 14px 36px -20px rgba(0, 0, 0, 0.55);
+}
+html.app-cute.app-dark .app-tabs-bar {
+  background: rgba(38, 29, 23, 0.92);
+}
+/* ProLayout realDark 侧栏默认冷灰，统一成暖棕 */
+html.app-cute.app-dark .ant-pro-sider .ant-menu-dark,
+html.app-cute.app-dark .ant-pro-sider .ant-menu-dark .ant-menu-sub {
+  background: transparent;
+}
+
+html.app-cute.app-dark * {
+  scrollbar-color: rgba(164, 138, 118, 0.4) transparent;
+}
+html.app-cute.app-dark *::-webkit-scrollbar-thumb {
+  background: rgba(164, 138, 118, 0.4);
+}
+html.app-cute.app-dark *::-webkit-scrollbar-thumb:hover {
+  background: rgba(164, 138, 118, 0.6);
+}
+
+/* 内容水印统一覆盖整个页面，包括表格与空状态。 */
+.app-content-watermark {
+  min-height: calc(100vh - 126px);
+}
+
+/* 锁屏使用实色遮挡业务内容，portal 与后台交互同时由 inert 禁用。 */
+.app-lock-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: 96px 24px 40px;
+  background: var(--ant-color-bg-layout, #f5f6f8);
+  color: var(--ant-color-text);
+}
+.app-lock-brand {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.app-lock-card {
+  width: 400px;
+  max-width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 32px;
+  background: var(--ant-color-bg-container);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 20px;
+  box-shadow: var(--ant-box-shadow-secondary);
+}
+.app-lock-card h3,
+.app-lock-card > .ant-typography {
+  text-align: center;
+}
+.app-lock-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 20px;
+  background: var(--ant-color-primary-bg);
+  color: var(--ant-color-primary);
+  font-size: 28px;
+}
+.app-lock-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 14px;
+  background: var(--ant-color-fill-quaternary);
+  border-radius: 12px;
+}
+.app-lock-user strong,
+.app-lock-user small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.app-lock-user small {
+  margin-top: 4px;
+  color: var(--ant-color-text-secondary);
+}
+@media (max-width: 575px) {
+  .app-sider-brand-title {
+    max-width: 160px;
+  }
+  .app-lock-brand {
+    left: 20px;
+    right: 20px;
+    font-size: 14px;
+  }
+  .app-lock-card {
+    padding: 24px;
+  }
+}
+@media (max-height: 640px) {
+  .app-lock-screen {
+    align-items: flex-start;
+  }
+}
+
+/* 侧栏底部收纳为一个快捷入口，展开 / 折叠都保持紧凑。 */
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-inline: 8px;
+}
+.ant-pro-layout-side .ant-pro-sider-actions {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 16px;
+  border-top: 1px solid var(--ant-color-border-secondary);
+}
+.ant-pro-layout-side .ant-pro-sider-actions-collapsed {
+  flex-direction: column;
+  padding-inline: 8px;
+}
+.ant-pro-layout-side .ant-pro-sider-actions-list {
+  flex: none;
+  margin: 0;
+}
+.ant-pro-layout-side .ant-pro-sider-actions-list-item {
+  padding: 0;
+}
+.ant-pro-layout-side .ant-pro-sider-actions-avatar {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.ant-pro-layout-side .ant-pro-sider-actions-avatar > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-user-trigger {
+  display: block;
+  min-width: 0;
+  cursor: pointer;
+}
+.ant-pro-layout-side .app-user-trigger {
+  flex: 1;
+}
+.ant-pro-layout-side .ant-pro-sider-actions-collapsed .app-user-trigger {
+  flex: none;
+}
+.app-quick-actions-trigger {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--ant-color-text-secondary);
+}
+.app-quick-actions-menu {
+  min-width: 168px;
+}
+.app-quick-actions-menu .ant-dropdown-menu-item {
+  padding: 8px 12px;
+}

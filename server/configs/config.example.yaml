@@ -1,0 +1,66 @@
+app:
+  name: pet-manager-api
+  env: dev # dev | test | prod
+  addr: ":8088"
+
+log:
+  level: info # debug | info | warn | error
+  format: console # console | json
+  output: stdout # stdout | file
+
+database:
+  host: 127.0.0.1
+  port: 5432
+  user: postgres
+  password: "postgres"
+  dbname: pet_manager
+  sslmode: disable
+  timezone: Asia/Shanghai
+  max_open_conns: 50
+  max_idle_conns: 10
+  conn_max_lifetime: 1h
+  # 平台公共库所在 schema（租户业务表在 tenant_<id> schema，永不落在这里）
+  platform_schema: public
+  log_level: warn # silent | error | warn | info
+
+redis:
+  addr: 127.0.0.1:6379
+  password: ""
+  db: 0
+  pool_size: 100
+  key_prefix: "pm:"
+
+jwt:
+  secret: "please-change-me-in-production"
+  issuer: pet-manager
+  access_ttl: 2h
+  refresh_ttl: 168h
+
+cors:
+  allow_origins:
+    - "http://localhost:5173"
+    - "http://127.0.0.1:5173"
+
+# 首次启动时的初始化数据；生产环境请用 PM_SEED_PLATFORM_ADMIN_PASSWORD 覆盖口令
+seed:
+  platform_admin_username: admin
+  platform_admin_password: "Admin@123456"
+
+# 定时任务执行器；Windows 可填写 Git Bash sh.exe 的绝对路径。
+jobs:
+  shell_path: sh
+
+# 服务器 SSH 凭证加密；通过 PM_HOSTING_ENCRYPTION_KEY 注入稳定的 32 字节随机密钥（Base64）。
+hosting:
+  encryption_key: ""
+
+tos:
+  enabled: false
+  endpoint: "" # 桶所在地域的 TOS Endpoint（不带 https://）
+  region: ""
+  access_key: "" # 火山引擎访问密钥 AK
+  secret_key: "" # 火山引擎访问密钥 SK
+  bucket: "" # 存储桶名
+  key_prefix: apps/ # 对象 key 前缀
+  public_base_url: "" # 公网/CDN 域名（如 https://cdn.example.com）；留空则使用私有桶预签名链接
+  presign_ttl: 10m # 私有桶预签名下载链接有效期（最大 7 天）

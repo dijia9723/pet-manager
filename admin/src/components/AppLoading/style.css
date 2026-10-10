@@ -1,0 +1,194 @@
+/**
+ * 精灵球摇摆 Loader
+ * 所有几何尺寸基于 em（1em = --loader-size），改尺寸只需改变量，不会失真。
+ * 颜色走 antd CSS 变量，亮色/暗色自动适配。
+ */
+.app-loading {
+  --loader-size: 56px;
+  /* 上半球：品牌红（带明暗两端的立体渐变） */
+  --loader-top-1: #ff6a4d;
+  --loader-top-2: #ef2a0f;
+  --loader-top-3: #b91a06;
+  /* 下半球：由面板色推导的亮/暗两端，暗色主题下自动变深 */
+  --loader-bottom-1: color-mix(in srgb, var(--ant-color-bg-container, #ffffff) 92%, #ffffff);
+  --loader-bottom-2: color-mix(in srgb, var(--ant-color-bg-container, #ffffff) 72%, #000000);
+  /* 赤道带 / 中心钮外圈 */
+  --loader-band: var(--ant-color-text, #1f1f1f);
+  /* 地面投影 */
+  --loader-shadow: color-mix(in srgb, var(--ant-color-text, #000000) 26%, transparent);
+
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--ant-color-text-secondary, rgba(0, 0, 0, 0.65));
+}
+
+/* 整页兜底：必须占满可用宽度，align-items 才能把内容水平居中 */
+.app-loading.is-page {
+  display: flex;
+  width: 100%;
+  min-height: 60vh;
+  justify-content: center;
+}
+
+.app-loading-ball {
+  position: relative;
+  width: 1em;
+  height: 1em;
+  font-size: var(--loader-size);
+}
+
+.app-loading-ball::before,
+.app-loading-ball::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+/* 球体：多层渐变叠出球面明暗，晃动绕底部支点做弹性钟摆 */
+.app-loading-ball::after {
+  transform-origin: 50% 100%;
+  background-color: var(--loader-band);
+  background-image:
+    /* 主高光（左上，柔光） */
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 26%),
+    /* 次高光（右上小亮斑） */
+    radial-gradient(circle at 66% 12%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 14%),
+    /* 边缘暗角，压出球体体积 */
+    radial-gradient(circle at 50% 46%, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.34) 92%),
+    /* 中心按钮：白心 + 深色外圈 */
+    radial-gradient(circle 0.075em, var(--loader-bottom-1) 94%, rgba(0, 0, 0, 0) 96%),
+    radial-gradient(circle 0.155em, var(--loader-band) 92%, rgba(0, 0, 0, 0) 95%),
+    /* 上半球（红，斜向明暗渐变） */
+    linear-gradient(155deg, var(--loader-top-1) 0%, var(--loader-top-2) 48%, var(--loader-top-3) 100%),
+    /* 下半球（面板色，底部收暗） */
+    linear-gradient(25deg, var(--loader-bottom-1) 0%, var(--loader-bottom-2) 100%);
+  background-repeat: no-repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% calc(50% - 0.0833em),
+    100% calc(50% - 0.0833em);
+  background-position:
+    center,
+    center,
+    center,
+    center,
+    center,
+    top,
+    bottom;
+  /* 内阴影给球面加厚度，外投影让球"浮"在地面上 */
+  box-shadow:
+    inset -0.14em -0.2em 0.3em rgba(0, 0, 0, 0.38),
+    inset 0.12em 0.14em 0.24em rgba(255, 255, 255, 0.3),
+    inset 0 0 0.08em rgba(0, 0, 0, 0.18),
+    0 0.12em 0.16em rgba(0, 0, 0, 0.28);
+  animation: app-loader-wobble 1.1s infinite cubic-bezier(0.5, 120, 0.5, -120);
+  will-change: transform;
+}
+
+/* 地面投影：近实远虚两层椭圆，随钟摆方向位移/收缩 */
+.app-loading-ball::before {
+  inset: auto 0 -0.1em;
+  height: 0.24em;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse at center,
+      var(--loader-shadow) 0%,
+      color-mix(in srgb, var(--loader-shadow) 55%, transparent) 42%,
+      rgba(0, 0, 0, 0) 72%
+    );
+  filter: blur(0.06em);
+  animation: app-loader-shadow 1.1s infinite cubic-bezier(0.5, 120, 0.5, -120);
+  will-change: transform, opacity;
+}
+
+@keyframes app-loader-wobble {
+  30%,
+  70% {
+    transform: rotate(0deg) scale(1, 1);
+  }
+  49.99% {
+    transform: rotate(0.6deg) scale(1.04, 0.96);
+  }
+  50% {
+    transform: rotate(-0.6deg) scale(1.04, 0.96);
+  }
+}
+
+@keyframes app-loader-shadow {
+  0%,
+  30%,
+  70%,
+  100% {
+    transform: translateX(0) scaleX(1);
+    opacity: 0.9;
+  }
+  49.99% {
+    transform: translateX(0.18em) scaleX(0.8);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(-0.18em) scaleX(0.8);
+    opacity: 0.55;
+  }
+}
+
+.app-loading-tip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.app-loading-dots {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.25em;
+}
+
+.app-loading-dots i {
+  width: 3px;
+  height: 3px;
+  margin: 0 1.5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: app-loader-dot 1.2s infinite ease-in-out;
+}
+
+.app-loading-dots i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.app-loading-dots i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes app-loader-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loading-ball::before,
+  .app-loading-ball::after,
+  .app-loading-dots i {
+    animation: none;
+  }
+}

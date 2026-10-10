@@ -1,0 +1,4052 @@
+basePath: /api/v1
+definitions:
+  auth.ChangePasswordInput:
+    properties:
+      new_password:
+        maxLength: 64
+        minLength: 6
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  auth.LoginInput:
+    properties:
+      password:
+        description: 明文口令（校验时比对散列）
+        type: string
+      tenant_code:
+        description: 租户编码；为空表示平台管理员登录
+        type: string
+      username:
+        description: 登录名
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth.RefreshInput:
+    properties:
+      refresh_token:
+        description: 登录时下发的刷新令牌
+        type: string
+    required:
+    - refresh_token
+    type: object
+  auth.UpdateProfileInput:
+    properties:
+      nickname:
+        maxLength: 64
+        type: string
+    required:
+    - nickname
+    type: object
+  config.Input:
+    properties:
+      config_key:
+        description: 参数键
+        maxLength: 128
+        type: string
+      group_key:
+        description: 分组键
+        maxLength: 64
+        type: string
+      name:
+        description: 参数名称
+        maxLength: 64
+        type: string
+      remark:
+        description: 备注
+        maxLength: 255
+        type: string
+      status:
+        description: 状态，非 disabled 一律按 enabled
+        type: string
+      type:
+        description: 值类型
+        enum:
+        - string
+        - number
+        - bool
+        - json
+        type: string
+      value:
+        description: 参数值
+        type: string
+    required:
+    - config_key
+    - name
+    - type
+    type: object
+  dict.DictInput:
+    properties:
+      code:
+        description: 字典编码
+        maxLength: 64
+        type: string
+      name:
+        description: 字典名称
+        maxLength: 64
+        type: string
+      remark:
+        description: 备注
+        maxLength: 255
+        type: string
+      status:
+        description: 状态，非 disabled 一律按 enabled
+        type: string
+    required:
+    - code
+    - name
+    type: object
+  dict.DictItemInput:
+    properties:
+      label:
+        description: 显示文本
+        maxLength: 64
+        type: string
+      remark:
+        description: 备注
+        maxLength: 255
+        type: string
+      sort:
+        description: 排序
+        type: integer
+      status:
+        description: 状态，非 disabled 一律按 enabled
+        type: string
+      storage_bytes:
+        description: 存储套餐容量（字节，最大 1PiB）
+        maximum: 1125899906842624
+        minimum: 0
+        type: integer
+      value:
+        description: 取值
+        maxLength: 128
+        type: string
+    required:
+    - label
+    - value
+    type: object
+  hosting.CommandInput:
+    properties:
+      command:
+        maxLength: 16384
+        type: string
+    required:
+    - command
+    type: object
+  hosting.DeployInput:
+    properties:
+      admin_email:
+        maxLength: 255
+        type: string
+      admin_password:
+        maxLength: 128
+        minLength: 12
+        type: string
+      license_key:
+        maxLength: 2048
+        type: string
+      port:
+        maximum: 65535
+        minimum: 1024
+        type: integer
+    required:
+    - admin_email
+    - admin_password
+    - port
+    type: object
+  hosting.FileAction:
+    properties:
+      destination:
+        maxLength: 1024
+        type: string
+      operation:
+        enum:
+        - mkdir
+        - rename
+        - delete
+        type: string
+      path:
+        maxLength: 1024
+        type: string
+    required:
+    - operation
+    - path
+    type: object
+  hosting.ServerInput:
+    properties:
+      auth_type:
+        enum:
+        - key
+        - password
+        type: string
+      credential:
+        maxLength: 65536
+        type: string
+      host:
+        maxLength: 255
+        type: string
+      host_fingerprint:
+        maxLength: 1024
+        type: string
+      name:
+        maxLength: 128
+        type: string
+      port:
+        maximum: 65535
+        minimum: 1
+        type: integer
+      remark:
+        maxLength: 255
+        type: string
+      status:
+        enum:
+        - enabled
+        - disabled
+        type: string
+      username:
+        maxLength: 64
+        type: string
+    required:
+    - auth_type
+    - host
+    - host_fingerprint
+    - name
+    - port
+    - status
+    - username
+    type: object
+  hosting.TextInput:
+    properties:
+      content:
+        type: string
+      path:
+        maxLength: 1024
+        type: string
+    required:
+    - path
+    type: object
+  hosting.WebsiteInput:
+    properties:
+      cms:
+        enum:
+        - none
+        - directus
+        type: string
+      cms_url:
+        maxLength: 512
+        type: string
+      name:
+        maxLength: 128
+        type: string
+      remark:
+        maxLength: 255
+        type: string
+      server_id:
+        type: integer
+      status:
+        enum:
+        - enabled
+        - disabled
+        type: string
+      tenant_id:
+        type: integer
+      url:
+        maxLength: 512
+        type: string
+    required:
+    - cms
+    - name
+    - server_id
+    - status
+    - tenant_id
+    type: object
+  job.CreateInput:
+    properties:
+      code:
+        maxLength: 64
+        type: string
+      config:
+        $ref: '#/definitions/job.ExecutionConfig'
+      kind:
+        type: string
+      name:
+        maxLength: 128
+        type: string
+      remark:
+        maxLength: 255
+        type: string
+      spec:
+        maxLength: 64
+        type: string
+      status:
+        type: string
+      timeout_seconds:
+        type: integer
+    required:
+    - code
+    - kind
+    - name
+    - spec
+    type: object
+  job.ExecutionConfig:
+    properties:
+      args:
+        items:
+          type: string
+        type: array
+      body:
+        type: string
+      curl:
+        type: string
+      handler:
+        type: string
+      headers:
+        additionalProperties:
+          type: string
+        type: object
+      method:
+        type: string
+      script:
+        type: string
+      script_path:
+        type: string
+      url:
+        type: string
+      work_dir:
+        type: string
+    type: object
+  job.Item:
+    properties:
+      builtin:
+        type: boolean
+      code:
+        type: string
+      config:
+        $ref: '#/definitions/job.ExecutionConfig'
+      created_at:
+        type: string
+      id:
+        type: integer
+      kind:
+        type: string
+      last_message:
+        type: string
+      last_run_at:
+        type: string
+      last_status:
+        type: string
+      name:
+        type: string
+      next_run_at:
+        type: string
+      remark:
+        type: string
+      spec:
+        type: string
+      status:
+        type: string
+      timeout_seconds:
+        type: integer
+    type: object
+  job.Method:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+      remark:
+        type: string
+    type: object
+  job.MethodCatalog:
+    properties:
+      methods:
+        items:
+          $ref: '#/definitions/job.Method'
+        type: array
+      shell_available:
+        type: boolean
+    type: object
+  job.UpdateInput:
+    properties:
+      config:
+        $ref: '#/definitions/job.ExecutionConfig'
+      kind:
+        type: string
+      name:
+        maxLength: 128
+        type: string
+      remark:
+        maxLength: 255
+        type: string
+      spec:
+        maxLength: 64
+        type: string
+      timeout_seconds:
+        type: integer
+    required:
+    - spec
+    type: object
+  notification.Input:
+    properties:
+      attachment_ids:
+        description: 引用本存储空间的就绪资源
+        items:
+          type: integer
+        maxItems: 10
+        type: array
+      category:
+        enum:
+        - announcement
+        - maintenance
+        - business
+        type: string
+      content:
+        maxLength: 20000
+        type: string
+      priority:
+        enum:
+        - normal
+        - urgent
+        type: string
+      require_process:
+        description: 是否需要接收人提交处理结果
+        type: boolean
+      target_ids:
+        items:
+          type: integer
+        maxItems: 500
+        type: array
+      target_type:
+        enum:
+        - all_tenants
+        - tenants
+        - tenant_users
+        - platform_users
+        - own_tenant
+        type: string
+      title:
+        maxLength: 128
+        type: string
+    required:
+    - category
+    - content
+    - priority
+    - target_type
+    - title
+    type: object
+  notification.ProcessInput:
+    properties:
+      feedback:
+        maxLength: 2000
+        type: string
+    required:
+    - feedback
+    type: object
+  permission.Input:
+    properties:
+      code:
+        description: 权限点编码
+        maxLength: 128
+        type: string
+      icon:
+        description: 图标名
+        maxLength: 64
+        type: string
+      name:
+        description: 显示名称
+        maxLength: 64
+        type: string
+      parent_id:
+        description: 父节点 ID，0 为根
+        type: integer
+      path:
+        description: 菜单路由
+        maxLength: 128
+        type: string
+      scope:
+        description: platform / tenant
+        enum:
+        - platform
+        - tenant
+        type: string
+      sort:
+        description: 排序
+        type: integer
+      type:
+        description: menu / button
+        enum:
+        - menu
+        - button
+        type: string
+    required:
+    - code
+    - name
+    - scope
+    - type
+    type: object
+  rbac.RoleInput:
+    properties:
+      code:
+        description: 角色编码
+        maxLength: 64
+        type: string
+      name:
+        description: 角色名称
+        maxLength: 64
+        type: string
+      permission_ids:
+        description: 授权的权限点 ID 集合
+        items:
+          type: integer
+        type: array
+      remark:
+        description: 备注
+        maxLength: 255
+        type: string
+    required:
+    - code
+    - name
+    type: object
+  response.Body:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  storage.AllocationInput:
+    properties:
+      action:
+        enum:
+        - assign
+        - expand
+        type: string
+      add_bytes:
+        description: expand 时的追加字节数
+        type: integer
+      plan_id:
+        description: assign 时的目标套餐
+        type: integer
+      remark:
+        maxLength: 255
+        type: string
+    required:
+    - action
+    type: object
+  tenant.CreateInput:
+    properties:
+      code:
+        description: 租户编码
+        maxLength: 64
+        type: string
+      contact_name:
+        description: 联系人
+        maxLength: 64
+        type: string
+      contact_phone:
+        description: 联系电话
+        maxLength: 32
+        type: string
+      expire_at:
+        description: 到期时间
+        type: string
+      name:
+        description: 租户名称
+        maxLength: 128
+        type: string
+      owner:
+        allOf:
+        - $ref: '#/definitions/tenant.OwnerInput'
+        description: 随租户创建的主账号
+    required:
+    - code
+    - name
+    - owner
+    type: object
+  tenant.DestroyInput:
+    properties:
+      confirm_code:
+        description: 必须精确匹配的租户编码
+        maxLength: 64
+        type: string
+    required:
+    - confirm_code
+    type: object
+  tenant.OwnerInput:
+    properties:
+      nickname:
+        description: 主账号昵称
+        maxLength: 64
+        type: string
+      password:
+        description: 主账号口令
+        maxLength: 64
+        minLength: 6
+        type: string
+      username:
+        description: 主账号登录名
+        maxLength: 64
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  tenant.UpdateInput:
+    properties:
+      code:
+        description: 租户编码
+        maxLength: 64
+        type: string
+      contact_name:
+        description: 联系人
+        maxLength: 64
+        type: string
+      contact_phone:
+        description: 联系电话
+        maxLength: 32
+        type: string
+      name:
+        description: 租户名称
+        maxLength: 128
+        type: string
+    required:
+    - code
+    - name
+    type: object
+  tenantprofile.UpdateInput:
+    properties:
+      address:
+        maxLength: 255
+        type: string
+      contact_name:
+        maxLength: 64
+        type: string
+      contact_phone:
+        maxLength: 32
+        type: string
+      name:
+        maxLength: 128
+        type: string
+    required:
+    - name
+    type: object
+  tenantuser.CreateInput:
+    properties:
+      nickname:
+        description: 昵称
+        maxLength: 64
+        type: string
+      password:
+        description: 初始口令
+        maxLength: 64
+        minLength: 6
+        type: string
+      role_ids:
+        description: 角色绑定
+        items:
+          type: integer
+        type: array
+      username:
+        description: 登录名
+        maxLength: 64
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  tenantuser.ResetPasswordInput:
+    properties:
+      password:
+        description: 新口令
+        maxLength: 64
+        minLength: 6
+        type: string
+    required:
+    - password
+    type: object
+  tenantuser.UpdateInput:
+    properties:
+      nickname:
+        description: 昵称
+        maxLength: 64
+        type: string
+      role_ids:
+        description: 角色绑定
+        items:
+          type: integer
+        type: array
+      status:
+        description: 状态
+        enum:
+        - enabled
+        - disabled
+        type: string
+    type: object
+host: localhost:8088
+info:
+  contact:
+    name: pet-manager
+  description: 宠物商户 SaaS 多租户底座脚手架接口文档。全站统一响应体 {"code","message","data"}，code=0 表示成功，业务错误码见
+    pkg/errcode。
+  license:
+    name: 私有项目，未授权请勿使用
+  title: 宠物商户 SaaS 后端 API
+  version: "1.0"
+paths:
+  /auth/change-password:
+    post:
+      consumes:
+      - application/json
+      description: 校验原密码后写入新密码，成功后该账号全部会话立即失效，需用新密码重新登录
+      parameters:
+      - description: 改密参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ChangePasswordInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "400":
+          description: 原密码不正确 / 新密码不合规
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 修改密码
+      tags:
+      - 认证
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 携带 tenant_code 时按租户子账号登录，不携带时按平台管理员登录；成功返回双令牌与身份信息
+      parameters:
+      - description: 登录参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 LoginResult
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: 用户名或密码错误 / 账号停用
+          schema:
+            $ref: '#/definitions/response.Body'
+      summary: 统一登录
+      tags:
+      - 认证
+  /auth/logout:
+    post:
+      description: 注销当前 access_token 对应的会话，令牌立即失效（可强制下线）
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 登出
+      tags:
+      - 认证
+  /auth/menus:
+    get:
+      description: 按账号权限点返回侧边栏菜单树，key 即权限点编码
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []MenuNode
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 我的菜单
+      tags:
+      - 认证
+  /auth/profile:
+    get:
+      description: 返回当前登录账号的身份、角色编码与权限点集合，不区分平台/租户身份
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 UserInfo
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 当前账号信息
+      tags:
+      - 认证
+    put:
+      consumes:
+      - application/json
+      description: 修改当前登录账号的昵称（平台/租户账号通用），返回最新 UserInfo
+      parameters:
+      - description: 个人资料
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.UpdateProfileInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 UserInfo
+          schema:
+            $ref: '#/definitions/response.Body'
+        "400":
+          description: 参数不合法
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 修改个人资料
+      tags:
+      - 认证
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 用 refresh_token 换取新的双令牌，旧会话保持有效
+      parameters:
+      - description: 刷新参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RefreshInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 LoginResult
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: 刷新凭证无效或已过期
+          schema:
+            $ref: '#/definitions/response.Body'
+      summary: 刷新令牌
+      tags:
+      - 认证
+  /platform/audit-logs:
+    get:
+      description: 只读查询登录后的写操作审计记录（POST/PUT/PATCH/DELETE），支持租户/操作人/时间范围筛选
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 按租户筛选，0/不传为全部
+        in: query
+        name: tenant_id
+        type: integer
+      - description: 按操作人筛选
+        in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 审计日志列表
+      tags:
+      - 平台-审计日志
+  /platform/configs:
+    get:
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 键名/名称关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 按分组筛选
+        in: query
+        name: group_key
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 参数列表
+      tags:
+      - 平台-参数配置
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 参数内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 参数键已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建参数
+      tags:
+      - 平台-参数配置
+  /platform/configs/{id}:
+    delete:
+      parameters:
+      - description: 参数 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除参数
+      tags:
+      - 平台-参数配置
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 参数 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 参数内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑参数
+      tags:
+      - 平台-参数配置
+  /platform/dicts:
+    get:
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 编码/名称关键字
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 字典类型列表
+      tags:
+      - 平台-字典管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 字典编码已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建字典类型
+      tags:
+      - 平台-字典管理
+  /platform/dicts/{id}:
+    delete:
+      description: 软删字典类型，其下字典项一并软删
+      parameters:
+      - description: 字典 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除字典类型
+      tags:
+      - 平台-字典管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典类型
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑字典类型
+      tags:
+      - 平台-字典管理
+  /platform/dicts/{id}/items:
+    get:
+      description: 返回指定字典类型下的全部字典项（按 sort 排序）
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []Entry
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 字典项列表
+      tags:
+      - 平台-字典管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典项
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictItemInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Entry
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 同字典下 value 已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建字典项
+      tags:
+      - 平台-字典管理
+  /platform/dicts/{id}/items/{itemId}:
+    delete:
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典项 ID
+        in: path
+        name: itemId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除字典项
+      tags:
+      - 平台-字典管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典项 ID
+        in: path
+        name: itemId
+        required: true
+        type: integer
+      - description: 字典项
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictItemInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Entry
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑字典项
+      tags:
+      - 平台-字典管理
+  /platform/jobs:
+    get:
+      description: 平台侧查询全部系统定时任务及其最近/下次执行状态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 定时任务列表
+      tags:
+      - 平台-任务管理
+    post:
+      consumes:
+      - application/json
+      description: 支持 system（已注册方法）、http（HTTP请求或curl）、shell（sh脚本）；默认停用
+      parameters:
+      - description: 任务配置
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/job.CreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Body'
+            - properties:
+                data:
+                  $ref: '#/definitions/job.Item'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建定时任务
+      tags:
+      - 平台-任务管理
+  /platform/jobs/{id}:
+    delete:
+      description: 仅允许删除已停用且未执行中的自定义任务，系统预置任务受保护
+      parameters:
+      - description: 任务ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除自定义任务
+      tags:
+      - 平台-任务管理
+    put:
+      consumes:
+      - application/json
+      description: 修改任务名称、类型、执行配置、超时、5 段 cron 与备注；预置任务仅允许修改调度、超时和备注
+      parameters:
+      - description: 任务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 调度参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/job.UpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "400":
+          description: cron 表达式非法
+          schema:
+            $ref: '#/definitions/response.Body'
+        "404":
+          description: 任务不存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑定时任务
+      tags:
+      - 平台-任务管理
+  /platform/jobs/{id}/disable:
+    post:
+      description: 停用后不再调度，已在执行中的任务不受影响
+      parameters:
+      - description: 任务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 停用定时任务
+      tags:
+      - 平台-任务管理
+  /platform/jobs/{id}/enable:
+    post:
+      parameters:
+      - description: 任务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 启用定时任务
+      tags:
+      - 平台-任务管理
+  /platform/jobs/{id}/logs:
+    get:
+      description: 分页查询单个任务的执行历史，支持按执行状态/触发方式筛选
+      parameters:
+      - description: 任务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 状态筛选 running/success/fail
+        in: query
+        name: status
+        type: string
+      - description: 触发方式 schedule/manual
+        in: query
+        name: trigger
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[LogItem]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 任务执行日志
+      tags:
+      - 平台-任务管理
+  /platform/jobs/{id}/run:
+    post:
+      description: 异步触发一次手动执行，不影响原有调度；任务正在执行时返回 409，结果在执行日志中查看
+      parameters:
+      - description: 任务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 任务正在执行中
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 立即执行任务
+      tags:
+      - 平台-任务管理
+  /platform/jobs/methods:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Body'
+            - properties:
+                data:
+                  $ref: '#/definitions/job.MethodCatalog'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 可调用的系统任务方法
+      tags:
+      - 平台-任务管理
+  /platform/login-logs:
+    get:
+      description: 只读查询全部登录尝试（含失败），支持用户名/租户/结果/时间范围筛选
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 按登录名筛选
+        in: query
+        name: username
+        type: string
+      - description: 结果筛选 success/fail
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 登录日志列表
+      tags:
+      - 平台-登录日志
+  /platform/messages:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      - description: 标题关键词
+        in: query
+        name: keyword
+        type: string
+      - description: unread/read/pending/processed
+        in: query
+        name: state
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[InboxItem]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 当前账号的消息中心
+      tags:
+      - 消息中心
+  /platform/messages/{id}/attachments/{resource_id}/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 附件资源 ID
+        in: path
+        name: resource_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 下载本人收到且未撤回的消息附件
+      tags:
+      - 消息中心
+  /platform/messages/{id}/process:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 处理反馈
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification.ProcessInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 提交本人的通知处理结果
+      tags:
+      - 消息中心
+  /platform/messages/{id}/read:
+    post:
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 标记本人消息已读（幂等）
+      tags:
+      - 消息中心
+  /platform/messages/unread-count:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为整数
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 当前账号的未读消息数量
+      tags:
+      - 消息中心
+  /platform/notifications:
+    get:
+      description: 平台查看平台下发消息；租户仅查看本租户发布消息。
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      - description: 标题关键词
+        in: query
+        name: keyword
+        type: string
+      - description: draft/published/revoked
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 通知管理列表（含接收、已读、已处理统计）
+      tags:
+      - 信息通知
+    post:
+      consumes:
+      - application/json
+      description: 租户端仅允许 own_tenant 或 tenant_users，发送方从登录上下文写入。
+      parameters:
+      - description: 通知内容与接收范围
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 model.Notification
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建通知草稿
+      tags:
+      - 信息通知
+  /platform/notifications/{id}:
+    put:
+      consumes:
+      - application/json
+      description: 租户仅可编辑本租户草稿，接收账号须归属当前租户。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 通知内容与接收范围
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 model.Notification
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑通知草稿
+      tags:
+      - 信息通知
+  /platform/notifications/{id}/attachments/{resource_id}/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 附件资源 ID
+        in: path
+        name: resource_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 下载发布通知的附件
+      tags:
+      - 信息通知
+  /platform/notifications/{id}/publish:
+    post:
+      description: 租户仅可发布本租户草稿，发布时重新校验接收账号归属。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 发布通知并生成接收人快照
+      tags:
+      - 信息通知
+  /platform/notifications/{id}/receipts:
+    get:
+      description: 租户仅可查看本租户发布消息的回执。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      - description: unread/read/pending/processed
+        in: query
+        name: state
+        type: string
+      - description: 租户名称/账号关键词
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[model.NotificationReceipt]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 查看通知接收回执与处理反馈
+      tags:
+      - 信息通知
+  /platform/notifications/{id}/revoke:
+    post:
+      description: 租户仅可撤回本租户发布消息。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 撤回已发布通知（保留历史回执）
+      tags:
+      - 信息通知
+  /platform/notifications/targets:
+    get:
+      description: 租户端 type 仅允许 tenant_users，结果仅包含本租户启用账号。
+      parameters:
+      - description: tenants/tenant_users/platform_users
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: 关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Option]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 分页搜索可接收通知的租户或账号
+      tags:
+      - 信息通知
+  /platform/permissions:
+    post:
+      consumes:
+      - application/json
+      description: 新建后全量失效所有租户的权限缓存；写操作需平台权限点
+      parameters:
+      - description: 权限点定义
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/permission.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Node
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建权限点
+      tags:
+      - 平台-菜单配置
+  /platform/permissions/{id}:
+    delete:
+      description: 软删权限点并解除角色引用，保存后全量失效权限缓存
+      parameters:
+      - description: 权限点 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除权限点
+      tags:
+      - 平台-菜单配置
+    put:
+      consumes:
+      - application/json
+      description: 名称/路径/图标/排序等治理项保存在线配置；保存后全量失效权限缓存
+      parameters:
+      - description: 权限点 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 权限点定义
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/permission.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Node
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑权限点
+      tags:
+      - 平台-菜单配置
+  /platform/permissions/tree:
+    get:
+      description: 返回菜单配置页的完整权限点树（含 menu/button 两类节点）
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []Node
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 权限点树
+      tags:
+      - 平台-菜单配置
+  /platform/servers:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 名称/主机
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[model.ManagedServer]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 服务器分页列表
+      tags:
+      - 平台-服务器管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 服务器
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.ServerInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新增/编辑服务器（空凭证保留原值）
+      tags:
+      - 平台-服务器管理
+  /platform/servers/{id}:
+    delete:
+      parameters:
+      - description: 服务器 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除未关联网站的服务器
+      tags:
+      - 平台-服务器管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 服务器 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 服务器
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.ServerInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑服务器（空凭证保留原值）
+      tags:
+      - 平台-服务器管理
+  /platform/servers/{id}/exec:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 服务器 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 命令
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.CommandInput'
+      responses:
+        "200":
+          description: data 为 CommandResult
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 执行平台 SSH 命令（使用配置账号的系统权限）
+      tags:
+      - 平台-服务器管理
+  /platform/servers/{id}/terminal:
+    get:
+      description: 使用 pet-manager-terminal.v1 子协议；浏览器通过 bearer.<access_token> 子协议携带登录凭证。输入和
+        resize 为 JSON 文本消息，输出为二进制 UTF-8 流，控制事件为 JSON。
+      parameters:
+      - description: 服务器 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 终端列数，默认 80
+        in: query
+        name: cols
+        type: integer
+      - description: 终端行数，默认 24
+        in: query
+        name: rows
+        type: integer
+      responses:
+        "101":
+          description: WebSocket 升级
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: 打开平台 SSH 交互终端（WebSocket / SSH PTY）
+      tags:
+      - 平台-服务器管理
+  /platform/servers/{id}/test:
+    post:
+      parameters:
+      - description: 服务器 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: data 为 CommandResult
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 测试 SSH 连接和远程账号权限
+      tags:
+      - 平台-服务器管理
+  /platform/storage/accounts:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 租户名称或编码
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 查询租户存储套餐和容量占用
+      tags:
+      - 存储资源
+  /platform/storage/accounts/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: assign 分配套餐保留扩容，expand 追加字节容量
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/storage.AllocationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 为租户分配存储套餐或追加容量
+      tags:
+      - 存储资源
+  /platform/storage/accounts/{id}/changes:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 分页查询租户存储配额变更记录
+      tags:
+      - 存储资源
+  /platform/storage/plans:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 读取平台字典 storage.plan 的启用套餐
+      tags:
+      - 存储资源
+  /platform/storage/resources:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 文件名
+        in: query
+        name: keyword
+        type: string
+      - description: 平台筛选归属租户，0 为平台
+        in: query
+        name: tenant_id
+        type: integer
+      - description: 只列出当前存储空间
+        in: query
+        name: own
+        type: boolean
+      - description: uploading/ready/deleting
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 分页查询存储资源（租户仅可查询本租户）
+      tags:
+      - 存储资源
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 文件，默认最大 100 MiB
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 上传文件到平台 TOS 并预占归属空间配额
+      tags:
+      - 存储资源
+  /platform/storage/resources/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 资源 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除资源及 TOS 对象，成功后释放容量，失败自动重试
+      tags:
+      - 存储资源
+  /platform/storage/resources/{id}/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 资源 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 获取经权限校验的临时下载地址
+      tags:
+      - 存储资源
+  /platform/storage/summary:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 查询当前存储空间套餐、占用和上传限制
+      tags:
+      - 存储资源
+  /platform/tenants:
+    get:
+      description: 平台端分页查询租户，支持按名称/编码关键字筛选
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 名称/编码关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 状态筛选 enabled/disabled
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户列表
+      tags:
+      - 平台-租户管理
+    post:
+      consumes:
+      - application/json
+      description: 原子完成建租户记录→建 schema 建表→预置角色→建主账号；失败自动补偿回滚
+      parameters:
+      - description: 租户与主账号信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenant.CreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 租户编码/账号已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 开通租户
+      tags:
+      - 平台-租户管理
+  /platform/tenants/{id}:
+    get:
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户详情
+      tags:
+      - 平台-租户管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 待更新字段
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenant.UpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑租户
+      tags:
+      - 平台-租户管理
+  /platform/tenants/{id}/delete:
+    post:
+      description: 仅标记待销毁并踢掉全部会话，不立即删除数据；按参数 tenant.purge_after_days（默认 7 天）到期后由系统定时任务物理销毁
+        schema，宽限期内可调用恢复接口撤销
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "404":
+          description: 租户不存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除租户
+      tags:
+      - 平台-租户管理
+  /platform/tenants/{id}/destroy:
+    post:
+      consumes:
+      - application/json
+      description: 跳过宽限期，输入匹配的租户编码后立即删除数据库与账号，存储对象进入自动清理队列
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 确认租户编码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenant.DestroyInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 DestroyResult
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 立即永久销毁单个租户
+      tags:
+      - 平台-租户管理
+  /platform/tenants/{id}/disable:
+    post:
+      description: 停用后该租户全部会话立即失效，再次请求被租户门禁拦截
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 停用租户
+      tags:
+      - 平台-租户管理
+  /platform/tenants/{id}/enable:
+    post:
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 启用租户
+      tags:
+      - 平台-租户管理
+  /platform/tenants/{id}/restore:
+    post:
+      description: 撤销待销毁标记：清空销毁时间，租户恢复为停用状态，需手动启用；不在宽限期内的租户调用返回 409
+      parameters:
+      - description: 租户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 租户未处于待销毁状态
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 恢复租户
+      tags:
+      - 平台-租户管理
+  /platform/websites:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 名称/地址
+        in: query
+        name: keyword
+        type: string
+      responses:
+        "200":
+          description: data 为 response.Page[model.Website]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 网站分页列表（租户仅查询本租户网站）
+      tags:
+      - 网站管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.WebsiteInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 分配/编辑网站（归属和服务器不可更改）
+      tags:
+      - 平台-网站管理
+  /platform/websites/{id}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 网站
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.WebsiteInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑网站（归属和服务器不可更改）
+      tags:
+      - 平台-网站管理
+  /platform/websites/{id}/cms/deploy:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 部署参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.DeployInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 部署独立 Directus、数据库及持久化卷
+      tags:
+      - 平台-网站管理
+  /platform/websites/{id}/files:
+    get:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 相对路径
+        in: query
+        name: path
+        type: string
+      responses:
+        "200":
+          description: data 为 []FileItem
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 浏览网站目录
+      tags:
+      - 网站文件
+  /platform/websites/{id}/files/actions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 操作
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.FileAction'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建目录、重命名或删除文件/空目录
+      tags:
+      - 网站文件
+  /platform/websites/{id}/files/content:
+    get:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: data 为 content 字符串
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 读取 UTF-8 文本（最大 1 MiB）
+      tags:
+      - 网站文件
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文本
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.TextInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 保存文本文件（最大 1 MiB）
+      tags:
+      - 网站文件
+  /platform/websites/{id}/files/download:
+    get:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      security:
+      - BearerAuth: []
+      summary: 下载网站文件（最大 10 MiB）
+      tags:
+      - 网站文件
+  /platform/websites/{id}/files/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 目标文件路径
+        in: formData
+        name: path
+        required: true
+        type: string
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 上传网站文件（最大 10 MiB）
+      tags:
+      - 网站文件
+  /platform/websites/{id}/provision:
+    post:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 初始化独立账号及 chroot 网站目录
+      tags:
+      - 平台-网站管理
+  /tenant/configs:
+    get:
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 键名/名称关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 按分组筛选
+        in: query
+        name: group_key
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户参数列表
+      tags:
+      - 租户-参数配置
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 参数内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 参数键已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户新建参数
+      tags:
+      - 租户-参数配置
+  /tenant/configs/{id}:
+    delete:
+      parameters:
+      - description: 参数 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户删除参数
+      tags:
+      - 租户-参数配置
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 参数 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 参数内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户编辑参数
+      tags:
+      - 租户-参数配置
+  /tenant/dicts:
+    get:
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 编码/名称关键字
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户字典类型列表
+      tags:
+      - 租户-字典管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 字典编码已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户新建字典类型
+      tags:
+      - 租户-字典管理
+  /tenant/dicts/{id}:
+    delete:
+      description: 软删字典类型，其下字典项一并软删
+      parameters:
+      - description: 字典 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户删除字典类型
+      tags:
+      - 租户-字典管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典类型
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户编辑字典类型
+      tags:
+      - 租户-字典管理
+  /tenant/dicts/{id}/items:
+    get:
+      description: 返回指定字典类型下的全部字典项（按 sort 排序）
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []Entry
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户字典项列表
+      tags:
+      - 租户-字典管理
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典项
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictItemInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Entry
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 同字典下 value 已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户新建字典项
+      tags:
+      - 租户-字典管理
+  /tenant/dicts/{id}/items/{itemId}:
+    delete:
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典项 ID
+        in: path
+        name: itemId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户删除字典项
+      tags:
+      - 租户-字典管理
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 字典项 ID
+        in: path
+        name: itemId
+        required: true
+        type: integer
+      - description: 字典项
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.DictItemInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Entry
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 租户编辑字典项
+      tags:
+      - 租户-字典管理
+  /tenant/info:
+    get:
+      description: 返回当前租户可自助维护的基础资料（只读字段 status/expire_at 由平台运营管理）
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 店铺资料
+      tags:
+      - 租户-店铺资料
+    put:
+      consumes:
+      - application/json
+      description: 仅名称/联系人/电话/地址可改；更新后失效租户快照缓存
+      parameters:
+      - description: 店铺资料
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenantprofile.UpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 更新店铺资料
+      tags:
+      - 租户-店铺资料
+  /tenant/messages:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      - description: 标题关键词
+        in: query
+        name: keyword
+        type: string
+      - description: unread/read/pending/processed
+        in: query
+        name: state
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[InboxItem]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 当前账号的消息中心
+      tags:
+      - 消息中心
+  /tenant/messages/{id}/attachments/{resource_id}/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 附件资源 ID
+        in: path
+        name: resource_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 下载本人收到且未撤回的消息附件
+      tags:
+      - 消息中心
+  /tenant/messages/{id}/process:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 处理反馈
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification.ProcessInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 提交本人的通知处理结果
+      tags:
+      - 消息中心
+  /tenant/messages/{id}/read:
+    post:
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 标记本人消息已读（幂等）
+      tags:
+      - 消息中心
+  /tenant/messages/unread-count:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为整数
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 当前账号的未读消息数量
+      tags:
+      - 消息中心
+  /tenant/notifications:
+    get:
+      description: 平台查看平台下发消息；租户仅查看本租户发布消息。
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      - description: 标题关键词
+        in: query
+        name: keyword
+        type: string
+      - description: draft/published/revoked
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 通知管理列表（含接收、已读、已处理统计）
+      tags:
+      - 信息通知
+    post:
+      consumes:
+      - application/json
+      description: 租户端仅允许 own_tenant 或 tenant_users，发送方从登录上下文写入。
+      parameters:
+      - description: 通知内容与接收范围
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 model.Notification
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建通知草稿
+      tags:
+      - 信息通知
+  /tenant/notifications/{id}:
+    put:
+      consumes:
+      - application/json
+      description: 租户仅可编辑本租户草稿，接收账号须归属当前租户。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 通知内容与接收范围
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/notification.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 model.Notification
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑通知草稿
+      tags:
+      - 信息通知
+  /tenant/notifications/{id}/attachments/{resource_id}/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 附件资源 ID
+        in: path
+        name: resource_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 下载发布通知的附件
+      tags:
+      - 信息通知
+  /tenant/notifications/{id}/publish:
+    post:
+      description: 租户仅可发布本租户草稿，发布时重新校验接收账号归属。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 发布通知并生成接收人快照
+      tags:
+      - 信息通知
+  /tenant/notifications/{id}/receipts:
+    get:
+      description: 租户仅可查看本租户发布消息的回执。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      - description: unread/read/pending/processed
+        in: query
+        name: state
+        type: string
+      - description: 租户名称/账号关键词
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[model.NotificationReceipt]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 查看通知接收回执与处理反馈
+      tags:
+      - 信息通知
+  /tenant/notifications/{id}/revoke:
+    post:
+      description: 租户仅可撤回本租户发布消息。
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 撤回已发布通知（保留历史回执）
+      tags:
+      - 信息通知
+  /tenant/notifications/targets:
+    get:
+      description: 租户端 type 仅允许 tenant_users，结果仅包含本租户启用账号。
+      parameters:
+      - description: tenants/tenant_users/platform_users
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: 关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Option]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 分页搜索可接收通知的租户或账号
+      tags:
+      - 信息通知
+  /tenant/permissions:
+    get:
+      description: 返回平台下发、当前租户身份可见的权限点树，供角色授权页勾选
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []PermissionNode
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 权限点树
+      tags:
+      - 租户-角色授权
+  /tenant/roles:
+    get:
+      description: 返回当前租户全部角色（含预置主账号/店员角色）及其权限点 ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 []RoleItem
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 角色列表
+      tags:
+      - 租户-角色授权
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色与授权权限点
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rbac.RoleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 RoleItem
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 角色编码已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建角色
+      tags:
+      - 租户-角色授权
+  /tenant/roles/{id}:
+    delete:
+      description: 预置角色禁止删除；仍被子账号引用时返回 20015 错误码
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 角色已被账号引用
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除角色
+      tags:
+      - 租户-角色授权
+    put:
+      consumes:
+      - application/json
+      description: 修改名称/备注/权限点；预置角色的 code 不可改
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 角色与授权权限点
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rbac.RoleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 RoleItem
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑角色
+      tags:
+      - 租户-角色授权
+  /tenant/storage/resources:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 文件名
+        in: query
+        name: keyword
+        type: string
+      - description: 平台筛选归属租户，0 为平台
+        in: query
+        name: tenant_id
+        type: integer
+      - description: 只列出当前存储空间
+        in: query
+        name: own
+        type: boolean
+      - description: uploading/ready/deleting
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 分页查询存储资源（租户仅可查询本租户）
+      tags:
+      - 存储资源
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 文件，默认最大 100 MiB
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 上传文件到平台 TOS 并预占归属空间配额
+      tags:
+      - 存储资源
+  /tenant/storage/resources/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 资源 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除资源及 TOS 对象，成功后释放容量，失败自动重试
+      tags:
+      - 存储资源
+  /tenant/storage/resources/{id}/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 资源 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 获取经权限校验的临时下载地址
+      tags:
+      - 存储资源
+  /tenant/storage/summary:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 查询当前存储空间套餐、占用和上传限制
+      tags:
+      - 存储资源
+  /tenant/users:
+    get:
+      description: 当前租户下的子账号分页列表，含角色 ID 与角色名
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20，最大 200
+        in: query
+        name: page_size
+        type: integer
+      - description: 用户名/昵称关键字
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 response.Page[Item]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 子账号列表
+      tags:
+      - 租户-子账号管理
+    post:
+      consumes:
+      - application/json
+      description: 建账号与角色绑定在同一租户事务内原子完成
+      parameters:
+      - description: 子账号信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenantuser.CreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data 为 Item
+          schema:
+            $ref: '#/definitions/response.Body'
+        "409":
+          description: 账号已存在
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建子账号
+      tags:
+      - 租户-子账号管理
+  /tenant/users/{id}:
+    delete:
+      description: 软删账号并解除角色绑定；不能删除自己；租户主账号受保护
+      parameters:
+      - description: 子账号 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 删除子账号
+      tags:
+      - 租户-子账号管理
+    put:
+      consumes:
+      - application/json
+      description: 修改昵称/状态/角色绑定；主账号受保护不可停用；改绑后立即失效权限缓存
+      parameters:
+      - description: 子账号 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 待更新字段
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenantuser.UpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 编辑子账号
+      tags:
+      - 租户-子账号管理
+  /tenant/users/{id}/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: 重置后踢掉该账号全部会话，需重新登录
+      parameters:
+      - description: 子账号 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新密码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/tenantuser.ResetPasswordInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 重置密码
+      tags:
+      - 租户-子账号管理
+  /tenant/websites:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 名称/地址
+        in: query
+        name: keyword
+        type: string
+      responses:
+        "200":
+          description: data 为 response.Page[model.Website]
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 网站分页列表（租户仅查询本租户网站）
+      tags:
+      - 网站管理
+  /tenant/websites/{id}/files:
+    get:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 相对路径
+        in: query
+        name: path
+        type: string
+      responses:
+        "200":
+          description: data 为 []FileItem
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 浏览网站目录
+      tags:
+      - 网站文件
+  /tenant/websites/{id}/files/actions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 操作
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.FileAction'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 新建目录、重命名或删除文件/空目录
+      tags:
+      - 网站文件
+  /tenant/websites/{id}/files/content:
+    get:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: data 为 content 字符串
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 读取 UTF-8 文本（最大 1 MiB）
+      tags:
+      - 网站文件
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文本
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/hosting.TextInput'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 保存文本文件（最大 1 MiB）
+      tags:
+      - 网站文件
+  /tenant/websites/{id}/files/download:
+    get:
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文件路径
+        in: query
+        name: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      security:
+      - BearerAuth: []
+      summary: 下载网站文件（最大 10 MiB）
+      tags:
+      - 网站文件
+  /tenant/websites/{id}/files/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 网站 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 目标文件路径
+        in: formData
+        name: path
+        required: true
+        type: string
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 上传网站文件（最大 10 MiB）
+      tags:
+      - 网站文件
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    description: 登录/刷新接口返回的 access_token，填写格式：Bearer {access_token}
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
