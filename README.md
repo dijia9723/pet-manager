@@ -1,21 +1,21 @@
-# Pet Manager · 宠物商户 SaaS 底座脚手架
+# Pet Manager ·  SaaS 底座脚手架(后台管理系统)
 
-多租户宠物商户 SaaS 的全栈脚手架：Go + Gin + PostgreSQL（schema 级多租户）+ Redis 后端，React + Vite + Ant Design Pro 前端。当前聚焦**底座能力**：多租户隔离、统一鉴权与 RBAC、审计/登录日志、参数配置、字典、菜单可视化治理、内置定时任务（租户两段式删除与到期销毁）。
+多租户 SaaS 的全栈脚手架(后台管理系统)：Go + Gin + PostgreSQL（schema 级多租户）+ Redis 后端，React + Vite + Ant Design Pro 前端。当前聚焦**底座能力**：多租户隔离、统一鉴权与 RBAC、审计/登录日志、参数配置、字典、菜单可视化治理、内置定时任务（租户两段式删除与到期销毁）。
 
 新增服务器 SSH 管理、租户网站分配与 chroot/SFTP 文件维护，以及独立 Directus Headless CMS 部署和文章、页面、导航、站点设置初始模型。启用方法、依赖选型及验收范围见 [服务器与网站接入说明](doc/hosting.md)。SSH 凭证需配置 `PM_HOSTING_ENCRYPTION_KEY`；CMS 域名的 DNS、反向代理与 HTTPS 由平台部署配置。
 
-- 后端脚手架文档集中在 [server_doc/](server_doc/cmd/api/main.md)，**镜像 `server/` 的目录结构**（如源码 `server/cmd/api/main.go` 的文档是 `server_doc/cmd/api/main.md`），从 [cmd/api/main.md](server_doc/cmd/api/main.md) 开始
+- 后端脚手架文档集中在 [server\_doc/](server_doc/cmd/api/main.md)，**镜像** **`server/`** **的目录结构**（如源码 `server/cmd/api/main.go` 的文档是 `server_doc/cmd/api/main.md`），从 [cmd/api/main.md](server_doc/cmd/api/main.md) 开始
 - 设计资料见 [doc/](doc/architecture.md)：`architecture.md` / `prd.md` / `plan.md`
 
----
+***
 
 ## 1. 技术栈
 
-| 端 | 技术 |
-| --- | --- |
-| 后端 | Go 1.26 · Gin · GORM · PostgreSQL 14+ · Redis · viper · zap · golang-jwt/v5 · bcrypt · swaggo/swag |
-| 前端 | React 18 · Vite · TypeScript · Ant Design 5 / ProComponents · zustand · axios |
-| 依赖部署 | Docker Compose（PG / Redis） |
+| 端    | 技术                                                                                                 |
+| ---- | -------------------------------------------------------------------------------------------------- |
+| 后端   | Go 1.26 · Gin · GORM · PostgreSQL 14+ · Redis · viper · zap · golang-jwt/v5 · bcrypt · swaggo/swag |
+| 前端   | React 18 · Vite · TypeScript · Ant Design 5 / ProComponents · zustand · axios                      |
+| 依赖部署 | Docker Compose（PG / Redis）                                                                         |
 
 ## 2. 目录结构
 
@@ -45,7 +45,7 @@ pet-manager/
 └── doc/                    # 架构/需求/计划文档
 ```
 
-> 后端脚手架文档全部集中在 `server_doc/`，**目录层级与 `server/` 源码一一对应**（如 `server/internal/model/tenant.go` ↔ [server_doc/internal/model/tenant.md](server_doc/internal/model/tenant.md)），说明职责、类型、约定与坑。完整索引见 [第 7 节](#7-脚手架文档地图)。
+> 后端脚手架文档全部集中在 `server_doc/`，**目录层级与** **`server/`** **源码一一对应**（如 `server/internal/model/tenant.go` ↔ [server\_doc/internal/model/tenant.md](server_doc/internal/model/tenant.md)），说明职责、类型、约定与坑。完整索引见 [第 7 节](#7-脚手架文档地图)。
 
 ## 3. 快速上手
 
@@ -76,9 +76,9 @@ make run             # 等价 go run ./cmd/api -c ./configs/config.yaml
 
 首次启动会自动：建平台库表与索引 → 补齐权限点字典 → 建平台管理员 → 为存量租户补表。
 
-- 默认监听 `:8088`；健康检查：http://localhost:8088/healthz
+- 默认监听 `:8088`；健康检查：<http://localhost:8088/healthz>
 - 默认管理员：`admin`（口令以配置/环境变量为准，生产必须用 `PM_SEED_PLATFORM_ADMIN_PASSWORD` 覆盖）
-- Swagger UI（dev/test）：http://localhost:8088/swagger/index.html
+- Swagger UI（dev/test）：<http://localhost:8088/swagger/index.html>
 
 ### 3.4 启动前端
 
@@ -102,23 +102,23 @@ PM_DATABASE_HOST=10.0.0.1 PM_REDIS_PASSWORD=xxx PM_APP_ADDR=:9090 make run
 
 ## 4. 常用命令（server/ 目录）
 
-| 命令 | 作用 |
-| --- | --- |
-| `make run` | 本地启动 API |
-| `make build` | 编译到 `bin/pet-manager-api` |
-| `make fmt` / `make vet` | gofmt / go vet |
-| `make test` | 全部无依赖单测 |
-| `make test-int` | 集成测试（需 PG+Redis，`PM_TEST_INTEGRATION=1`） |
-| `make swag` | 重新生成 Swagger 文档到 `docs/` |
-| `make swag-fmt` | 格式化 Swagger 注解 |
-| `make infra-up/down/logs` | 启停/查看本地依赖 |
-| `make tidy` | go mod tidy |
+| 命令                        | 作用                                       |
+| ------------------------- | ---------------------------------------- |
+| `make run`                | 本地启动 API                                 |
+| `make build`              | 编译到 `bin/pet-manager-api`                |
+| `make fmt` / `make vet`   | gofmt / go vet                           |
+| `make test`               | 全部无依赖单测                                  |
+| `make test-int`           | 集成测试（需 PG+Redis，`PM_TEST_INTEGRATION=1`） |
+| `make swag`               | 重新生成 Swagger 文档到 `docs/`                 |
+| `make swag-fmt`           | 格式化 Swagger 注解                           |
+| `make infra-up/down/logs` | 启停/查看本地依赖                                |
+| `make tidy`               | go mod tidy                              |
 
 前端门禁：`npm run tsc`（或 `tsc --noEmit`）、`npm run lint`、`npm run build`。
 
 ## 5. Swagger 接口文档
 
-- 地址：http://localhost:8088/swagger/index.html （仅 `app.env != prod` 注册；prod 自动关闭）
+- 地址：<http://localhost:8088/swagger/index.html> （仅 `app.env != prod` 注册；prod 自动关闭）
 - 通用信息注解在 [main.go](server/cmd/api/main.go)（标题、`@host`、`@BasePath /api/v1`、`BearerAuth` 安全定义）；
 - 每个接口在对应 handler 的注释里用 swag 注解声明（`@Summary/@Tags/@Param/@Success/@Router/@Security`）；
 - 统一响应体 `{code,message,data}`（见 [response.md](server_doc/internal/pkg/response/response.md)），Swagger 中 data 的实际类型写在 `@Success` 描述里；
@@ -133,7 +133,7 @@ PM_DATABASE_HOST=10.0.0.1 PM_REDIS_PASSWORD=xxx PM_APP_ADDR=:9090 make run
 4. **会话可强制下线**：JWT 带 `sid`，每请求查 Redis 会话；登出/改密/停用立即生效。权限点按「租户+账号」缓存 10min，变更需主动失效。
 5. **权限点声明式治理**：代码 [seed](server_doc/internal/seed/seed.md) 只补不覆盖，名称/路径/图标等由「菜单配置」页在线维护；字典写操作后全量失效权限缓存。
 6. **审计非阻塞**：只记登录后写操作，不记请求体；缓冲队列 + 单 worker，满则丢弃，绝不拖慢主请求。
-7. **模型约定**：所有表继承 BaseModel（id/created_at/updated_at/deleted_at）；自然键唯一一律用 `WHERE deleted_at IS NULL` 部分唯一索引。
+7. **模型约定**：所有表继承 BaseModel（id/created\_at/updated\_at/deleted\_at）；自然键唯一一律用 `WHERE deleted_at IS NULL` 部分唯一索引。
 8. **任务管理与租户销毁**：支持页面新建系统方法、HTTP/curl 请求、sh 脚本任务，统一提供 5 段 cron、启停、手动执行、超时和日志；进程守卫 + Redis 锁防多实例重入。代码预置任务只补不覆盖。租户删除为两段式：先 `deleted` 待销毁（默认 7 天宽限，可撤销），到期任务 `DROP SCHEMA CASCADE` 物理回收。配置示例及方法注册见 [job/service](server_doc/internal/modules/job/service.md)。
 
 ### 新增一个业务模块（后端）
@@ -143,7 +143,7 @@ PM_DATABASE_HOST=10.0.0.1 PM_REDIS_PASSWORD=xxx PM_APP_ADDR=:9090 make run
 3. 新表：一表一文件 + 在 [models.go](server_doc/internal/model/models.md) 登记 + 必要时在 [migrate.go](server_doc/internal/migrate/migrate.md) 加部分唯一索引；
 4. 新权限点：在 [seed.go](server_doc/internal/seed/seed.md) 的 `permDefs` 声明；写操作后按范围失效权限缓存；
 5. 给每个 handler 补 swag 注解并执行 `make swag`；
-6. **在 `server_doc/` 镜像位置编写/更新同名 `.md`**（源码在 `server/`，文档在 `server_doc/`，本约定由项目 skill 守护）；
+6. **在** **`server_doc/`** **镜像位置编写/更新同名** **`.md`**（源码在 `server/`，文档在 `server_doc/`，本约定由项目 skill 守护）；
 7. `make fmt && make vet && make test` 自检。
 
 前端约定（抽屉表单、DataTable/DataDrawer 二次封装、表格密度、空态插画、双主题等）见 [doc/architecture.md](doc/architecture.md) 的「前端脚手架」章节。
@@ -160,7 +160,7 @@ PM_DATABASE_HOST=10.0.0.1 PM_REDIS_PASSWORD=xxx PM_APP_ADDR=:9090 make run
 
 ### 基础设施 infra
 
-- [infra/db/manager.md](server_doc/internal/infra/db/manager.md) · [manager_test.md](server_doc/internal/infra/db/manager_test.md)
+- [infra/db/manager.md](server_doc/internal/infra/db/manager.md) · [manager\_test.md](server_doc/internal/infra/db/manager_test.md)
 - [infra/cache/redis.md](server_doc/internal/infra/cache/redis.md)
 - [infra/session/store.md](server_doc/internal/infra/session/store.md)
 - [infra/logger/logger.md](server_doc/internal/infra/logger/logger.md)
@@ -169,47 +169,45 @@ PM_DATABASE_HOST=10.0.0.1 PM_REDIS_PASSWORD=xxx PM_APP_ADDR=:9090 make run
 
 - [registry.md](server_doc/internal/middleware/registry.md) · [common.md](server_doc/internal/middleware/common.md)
 - [auth.md](server_doc/internal/middleware/auth.md) · [tenant.md](server_doc/internal/middleware/tenant.md) · [rbac.md](server_doc/internal/middleware/rbac.md) · [audit.md](server_doc/internal/middleware/audit.md)
-- [rbac_test.md](server_doc/internal/middleware/rbac_test.md)
+- [rbac\_test.md](server_doc/internal/middleware/rbac_test.md)
 
 ### 数据 / 迁移 / 路由
 
 - [router/router.md](server_doc/internal/router/router.md)
 - [migrate/migrate.md](server_doc/internal/migrate/migrate.md) · [seed/seed.md](server_doc/internal/seed/seed.md)
-- [tests/integration_test.md](server_doc/internal/tests/integration_test.md)
+- [tests/integration\_test.md](server_doc/internal/tests/integration_test.md)
 
 ### 数据模型 model
 
 - 总册：[models.md](server_doc/internal/model/models.md) · 基类：[base.md](server_doc/internal/model/base.md) · 枚举：[consts.md](server_doc/internal/model/consts.md)
-- 平台库：[tenant](server_doc/internal/model/tenant.md) · [platform_user](server_doc/internal/model/platform_user.md) · [tenant_user](server_doc/internal/model/tenant_user.md) · [permission](server_doc/internal/model/permission.md) · [audit_log](server_doc/internal/model/audit_log.md) · [login_log](server_doc/internal/model/login_log.md) · [config](server_doc/internal/model/config.md) · [dict](server_doc/internal/model/dict.md) · [dict_item](server_doc/internal/model/dict_item.md) · [job](server_doc/internal/model/job.md) · [job_log](server_doc/internal/model/job_log.md)
-- 租户库：[role](server_doc/internal/model/role.md) · [role_permission](server_doc/internal/model/role_permission.md) · [user_role](server_doc/internal/model/user_role.md) · [tenant_config](server_doc/internal/model/tenant_config.md) · [tenant_dict](server_doc/internal/model/tenant_dict.md) · [tenant_dict_item](server_doc/internal/model/tenant_dict_item.md) · [schema_version](server_doc/internal/model/schema_version.md)
-
-- 信息通知：[notification](server_doc/internal/model/notification.md) · [notification_receipt](server_doc/internal/model/notification_receipt.md)
-
-- 存储台账：[storage_account](server_doc/internal/model/storage_account.md) · [storage_resource](server_doc/internal/model/storage_resource.md) · [storage_change](server_doc/internal/model/storage_change.md)
+- 平台库：[tenant](server_doc/internal/model/tenant.md) · [platform\_user](server_doc/internal/model/platform_user.md) · [tenant\_user](server_doc/internal/model/tenant_user.md) · [permission](server_doc/internal/model/permission.md) · [audit\_log](server_doc/internal/model/audit_log.md) · [login\_log](server_doc/internal/model/login_log.md) · [config](server_doc/internal/model/config.md) · [dict](server_doc/internal/model/dict.md) · [dict\_item](server_doc/internal/model/dict_item.md) · [job](server_doc/internal/model/job.md) · [job\_log](server_doc/internal/model/job_log.md)
+- 租户库：[role](server_doc/internal/model/role.md) · [role\_permission](server_doc/internal/model/role_permission.md) · [user\_role](server_doc/internal/model/user_role.md) · [tenant\_config](server_doc/internal/model/tenant_config.md) · [tenant\_dict](server_doc/internal/model/tenant_dict.md) · [tenant\_dict\_item](server_doc/internal/model/tenant_dict_item.md) · [schema\_version](server_doc/internal/model/schema_version.md)
+- 信息通知：[notification](server_doc/internal/model/notification.md) · [notification\_receipt](server_doc/internal/model/notification_receipt.md)
+- 存储台账：[storage\_account](server_doc/internal/model/storage_account.md) · [storage\_resource](server_doc/internal/model/storage_resource.md) · [storage\_change](server_doc/internal/model/storage_change.md)
 
 ### 业务模块 modules
 
-| 模块 | 文档 |
-| --- | --- |
-| auth 认证 | [handler](server_doc/internal/modules/auth/handler.md) · [service](server_doc/internal/modules/auth/service.md) |
-| tenant 租户管理 | [handler](server_doc/internal/modules/tenant/handler.md) · [service](server_doc/internal/modules/tenant/service.md) · [purge](server_doc/internal/modules/tenant/purge.md) · [purge_test](server_doc/internal/modules/tenant/purge_test.md) |
-| rbac 角色授权 | [module](server_doc/internal/modules/rbac/module.md) · [service](server_doc/internal/modules/rbac/service.md) |
-| tenantuser 子账号 | [handler](server_doc/internal/modules/tenantuser/handler.md) · [service](server_doc/internal/modules/tenantuser/service.md) |
-| tenantprofile 店铺资料 | [service](server_doc/internal/modules/tenantprofile/service.md) |
-| audit 审计日志 | [handler](server_doc/internal/modules/audit/handler.md) · [module](server_doc/internal/modules/audit/module.md) · [service](server_doc/internal/modules/audit/service.md) · [policy](server_doc/internal/modules/audit/policy.md) · [policy_test](server_doc/internal/modules/audit/policy_test.md) |
-| loginlog 登录日志 | [handler](server_doc/internal/modules/loginlog/handler.md) · [module](server_doc/internal/modules/loginlog/module.md) · [service](server_doc/internal/modules/loginlog/service.md) |
-| permission 菜单配置 | [handler](server_doc/internal/modules/permission/handler.md) · [module](server_doc/internal/modules/permission/module.md) · [service](server_doc/internal/modules/permission/service.md) |
-| config 参数配置（平台 + 租户） | [handler](server_doc/internal/modules/config/handler.md) · [tenant_handler](server_doc/internal/modules/config/tenant_handler.md) · [module](server_doc/internal/modules/config/module.md) · [service](server_doc/internal/modules/config/service.md) · [tenant_service](server_doc/internal/modules/config/tenant_service.md) |
-| dict 字典管理（平台 + 租户） | [handler](server_doc/internal/modules/dict/handler.md) · [tenant_handler](server_doc/internal/modules/dict/tenant_handler.md) · [module](server_doc/internal/modules/dict/module.md) · [service](server_doc/internal/modules/dict/service.md) · [tenant_service](server_doc/internal/modules/dict/tenant_service.md) |
-| job 任务管理（定时任务/租户销毁） | [module](server_doc/internal/modules/job/module.md) · [handler](server_doc/internal/modules/job/handler.md) · [service](server_doc/internal/modules/job/service.md) · [cron](server_doc/internal/modules/job/cron.md) · [cron_test](server_doc/internal/modules/job/cron_test.md) |
-| notification 信息通知 | [module](server_doc/internal/modules/notification/module.md) · [handler](server_doc/internal/modules/notification/handler.md) · [service](server_doc/internal/modules/notification/service.md) · [service_test](server_doc/internal/modules/notification/service_test.md) |
+| 模块                   | 文档                                                                                                                                                                                                                                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| auth 认证              | [handler](server_doc/internal/modules/auth/handler.md) · [service](server_doc/internal/modules/auth/service.md)                                                                                                                                                                                                                  |
+| tenant 租户管理          | [handler](server_doc/internal/modules/tenant/handler.md) · [service](server_doc/internal/modules/tenant/service.md) · [purge](server_doc/internal/modules/tenant/purge.md) · [purge\_test](server_doc/internal/modules/tenant/purge_test.md)                                                                                     |
+| rbac 角色授权            | [module](server_doc/internal/modules/rbac/module.md) · [service](server_doc/internal/modules/rbac/service.md)                                                                                                                                                                                                                    |
+| tenantuser 子账号       | [handler](server_doc/internal/modules/tenantuser/handler.md) · [service](server_doc/internal/modules/tenantuser/service.md)                                                                                                                                                                                                      |
+| tenantprofile 店铺资料   | [service](server_doc/internal/modules/tenantprofile/service.md)                                                                                                                                                                                                                                                                  |
+| audit 审计日志           | [handler](server_doc/internal/modules/audit/handler.md) · [module](server_doc/internal/modules/audit/module.md) · [service](server_doc/internal/modules/audit/service.md) · [policy](server_doc/internal/modules/audit/policy.md) · [policy\_test](server_doc/internal/modules/audit/policy_test.md)                             |
+| loginlog 登录日志        | [handler](server_doc/internal/modules/loginlog/handler.md) · [module](server_doc/internal/modules/loginlog/module.md) · [service](server_doc/internal/modules/loginlog/service.md)                                                                                                                                               |
+| permission 菜单配置      | [handler](server_doc/internal/modules/permission/handler.md) · [module](server_doc/internal/modules/permission/module.md) · [service](server_doc/internal/modules/permission/service.md)                                                                                                                                         |
+| config 参数配置（平台 + 租户） | [handler](server_doc/internal/modules/config/handler.md) · [tenant\_handler](server_doc/internal/modules/config/tenant_handler.md) · [module](server_doc/internal/modules/config/module.md) · [service](server_doc/internal/modules/config/service.md) · [tenant\_service](server_doc/internal/modules/config/tenant_service.md) |
+| dict 字典管理（平台 + 租户）   | [handler](server_doc/internal/modules/dict/handler.md) · [tenant\_handler](server_doc/internal/modules/dict/tenant_handler.md) · [module](server_doc/internal/modules/dict/module.md) · [service](server_doc/internal/modules/dict/service.md) · [tenant\_service](server_doc/internal/modules/dict/tenant_service.md)           |
+| job 任务管理（定时任务/租户销毁）  | [module](server_doc/internal/modules/job/module.md) · [handler](server_doc/internal/modules/job/handler.md) · [service](server_doc/internal/modules/job/service.md) · [cron](server_doc/internal/modules/job/cron.md) · [cron\_test](server_doc/internal/modules/job/cron_test.md)                                               |
+| notification 信息通知    | [module](server_doc/internal/modules/notification/module.md) · [handler](server_doc/internal/modules/notification/handler.md) · [service](server_doc/internal/modules/notification/service.md) · [service\_test](server_doc/internal/modules/notification/service_test.md)                                                       |
 
-| storage 统一存储 | [module](server_doc/internal/modules/storage/module.md) · [handler](server_doc/internal/modules/storage/handler.md) · [service](server_doc/internal/modules/storage/service.md) · [service_test](server_doc/internal/modules/storage/service_test.md) |
+\| storage 统一存储 | [module](server_doc/internal/modules/storage/module.md) · [handler](server_doc/internal/modules/storage/handler.md) · [service](server_doc/internal/modules/storage/service.md) · [service\_test](server_doc/internal/modules/storage/service_test.md) |
 
-- TOS 适配：[tos](server_doc/internal/infra/objectstore/tos.md) · [tos_test](server_doc/internal/infra/objectstore/tos_test.md)
+- TOS 适配：[tos](server_doc/internal/infra/objectstore/tos.md) · [tos\_test](server_doc/internal/infra/objectstore/tos_test.md)
 - 存储字典种子：[storage](server_doc/internal/seed/storage.md)
 - 消息附件鉴权：[attachment](server_doc/internal/modules/notification/attachment.md)
-- TOS 环境配置测试：[config_test](server_doc/internal/config/config_test.md)
+- TOS 环境配置测试：[config\_test](server_doc/internal/config/config_test.md)
 
 ### 工具包 pkg
 
